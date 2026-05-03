@@ -10,7 +10,6 @@
             padding: 0;
             box-sizing: border-box;
         }
-        
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -20,7 +19,6 @@
             align-items: center;
             padding: 20px;
         }
-        
         .container {
             background: white;
             border-radius: 20px;
@@ -30,30 +28,25 @@
             max-width: 500px;
             width: 100%;
         }
-        
         .icon {
             font-size: 64px;
             margin-bottom: 20px;
             animation: bounce 1s infinite;
         }
-        
         @keyframes bounce {
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-10px); }
         }
-        
         h1 {
             color: #333;
             font-size: 28px;
             margin-bottom: 15px;
         }
-        
         p {
             color: #666;
             font-size: 18px;
             margin-bottom: 30px;
         }
-        
         .loader {
             width: 50px;
             height: 50px;
@@ -63,12 +56,10 @@
             animation: spin 1s linear infinite;
             margin: 0 auto;
         }
-        
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-        
         .discount-badge {
             background: #00c875;
             color: white;
@@ -79,7 +70,6 @@
             font-weight: bold;
             font-size: 16px;
         }
-        
         .error {
             background: #ff6b6b;
             color: white;
@@ -98,7 +88,6 @@
             <div class="loader"></div>
         </div>
     </div>
-
     <script>
         function getUrlParameter(name) {
             name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
@@ -106,37 +95,21 @@
             var results = regex.exec(location.search);
             return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
         }
-
         const couponCode = getUrlParameter('coupon').toLowerCase().trim();
         const hasDiscount = couponCode === 'mizrahnik10';
-
         let paymentLink = '';
-
         if (hasDiscount) {
             paymentLink = 'https://pay.sumit.co.il/a3x3bj/lqh2dj/';
-            
-            document.getElementById('content').innerHTML = `
-                <div class="discount-badge">✅ זכאי להנחה של 10 ₪!</div>
-                <h1>מעביר אותך לתשלום עם הנחה...</h1>
-                <p>מחיר מיוחד מחכה לך! 🎉</p>
-                <div class="loader"></div>
-            `;
+            document.getElementById('content').innerHTML = '<div class="discount-badge">✅ זכאי להנחה של 10 ₪!</div><h1>מעביר אותך לתשלום עם הנחה...</h1><p>מחיר מיוחד מחכה לך! 🎉</p><div class="loader"></div>';
         } else {
             paymentLink = 'https://pay.sumit.co.il/a3x3bj/cqeano/';
         }
-
         if (paymentLink) {
             setTimeout(function() {
                 window.location.href = paymentLink;
             }, 1500);
         } else {
-            document.getElementById('content').innerHTML = `
-                <div class="error">
-                    <h2>אופס! משהו השתבש</h2>
-                    <p>אנא צור קשר איתנו בוואטסאפ:</p>
-                    <a href="https://wa.me/972559873084" style="color: white; text-decoration: underline;">055-987-3084</a>
-                </div>
-            `;
+            document.getElementById('content').innerHTML = '<div class="error"><h2>אופס! משהו השתבש</h2><p>אנא צור קשר איתנו בוואטסאפ:</p><a href="https://wa.me/972559873084" style="color: white;">055-987-3084</a></div>';
         }
     </script>
 </body>
