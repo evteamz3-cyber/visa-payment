@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>תשלום ויזה להודו - בדיקת קוד קופון</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 50px 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+        }
+        .icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 15px;
+        }
+        p {
+            color: #666;
+            font-size: 18px;
+            margin-bottom: 30px;
+        }
+        .question {
+            font-size: 22px;
+            color: #333;
+            font-weight: bold;
+            margin-bottom: 30px;
+        }
+        .buttons {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-direction: column;
+        }
+        button {
+            padding: 18px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+        .btn-yes {
+            background: #00c875;
+            color: white;
+        }
+        .btn-yes:hover {
+            background: #00b369;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,200,117,0.3);
+        }
+        .btn-no {
+            background: #0073ea;
+            color: white;
+        }
+        .btn-no:hover {
+            background: #0060c2;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,115,234,0.3);
+        }
+        .coupon-input-section {
+            display: none;
+            margin-top: 30px;
+            animation: fadeIn 0.3s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 15px;
+            font-size: 18px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            text-align: center;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #00c875;
+        }
+        .btn-submit {
+            background: #00c875;
+            color: white;
+            width: 100%;
+        }
+        .btn-submit:hover {
+            background: #00b369;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,200,117,0.3);
+        }
+        .btn-back {
+            background: #f0f0f0;
+            color: #666;
+            margin-top: 10px;
+            width: 100%;
+        }
+        .btn-back:hover {
+            background: #e0e0e0;
+        }
+        .error-message {
+            background: #ff6b6b;
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: none;
+        }
+        .success-message {
+            background: #00c875;
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: none;
+        }
+        .discount-badge {
+            background: #ffd700;
+            color: #333;
+            padding: 8px 16px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-bottom: 15px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="icon">✈️</div>
+        <div id="initial-question">
+            <h1>תודה על הבקשה! 🎉</h1>
+            <p>קיבלנו את פרטי הבקשה שלך לויזה להודו</p>
+            <div class="question">יש לך קוד קופון?</div>
+            <div class="buttons">
+                <button class="btn-yes" onclick="showCouponInput()">✅ כן, יש לי קוד קופון</button>
+                <button class="btn-no" onclick="goToRegularPayment()">➡️ לא, המשך לתשלום</button>
+            </div>
+        </div>
+        <div id="coupon-input" class="coupon-input-section">
+            <div class="discount-badge">💰 הנחה של 10 ₪</div>
+            <h1>הזן את קוד הקופון</h1>
+            <p>הקלד את הקוד שקיבלת</p>
+            <div class="error-message" id="error-message">❌ קוד שגוי! נסה שוב</div>
+            <div class="success-message" id="success-message">✅ קוד תקין! מעביר לתשלום עם הנחה...</div>
+            <input type="text" id="coupon-code" placeholder="הזן קוד קופון" maxlength="20">
+            <button class="btn-submit" onclick="validateCoupon()">✅ אישור והמשך לתשלום</button>
+            <button class="btn-back" onclick="goBack()">← חזור</button>
+        </div>
+    </div>
+    <script>
+        function showCouponInput() {
+            document.getElementById('initial-question').style.display = 'none';
+            document.getElementById('coupon-input').style.display = 'block';
+            document.getElementById('coupon-code').focus();
+        }
+        function goBack() {
+            document.getElementById('coupon-input').style.display = 'none';
+            document.getElementById('initial-question').style.display = 'block';
+            document.getElementById('coupon-code').value = '';
+            document.getElementById('error-message').style.display = 'none';
+        }
+        function goToRegularPayment() {
+            window.location.href = 'https://pay.sumit.co.il/a3x3bj/cqeano/';
+        }
+        function validateCoupon() {
+            const couponCode = document.getElementById('coupon-code').value.toLowerCase().trim();
+            const errorMessage = document.getElementById('error-message');
+            const successMessage = document.getElementById('success-message');
+            errorMessage.style.display = 'none';
+            successMessage.style.display = 'none';
+            if (couponCode === 'mizrahnik10') {
+                successMessage.style.display = 'block';
+                setTimeout(function() {
+                    window.location.href = 'https://pay.sumit.co.il/a3x3bj/lqh2dj/';
+                }, 1500);
+            } else {
+                errorMessage.style.display = 'block';
+                document.getElementById('coupon-code').value = '';
+                document.getElementById('coupon-code').focus();
+            }
+        }
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('coupon-code').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    validateCoupon();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
